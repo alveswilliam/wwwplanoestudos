@@ -11,7 +11,7 @@ namespace wwwplanoestudos
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Response.Write("teste 2");
+            //Response.Write("teste 2");
         }
     }
 }

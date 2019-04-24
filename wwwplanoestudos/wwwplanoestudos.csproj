@@ -106,6 +106,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="assets\img\cabecalho.png" />
+    <Content Include="assets\img\cabecalho-color.png" />
+    <Content Include="assets\img\favicon-unifaj.png" />
+    <Content Include="vendor\bootstrap\css\bootstrap.min.css" />
+    <Content Include="assets\css\login.css" />
+    <Content Include="vendor\bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Include="vendor\jquery\jquery.easing.min.js" />
+    <Content Include="vendor\jquery\jquery.min.js" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -219,6 +227,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="assets\js\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
