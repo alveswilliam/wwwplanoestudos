@@ -44,6 +44,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.CPConnect, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\..\..\..\Windows\System32\Interop.CPConnect.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
@@ -105,23 +110,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="About.aspx" />
+    <Content Include="Alunos.aspx" />
+    <Content Include="assets\css\radio-check.css" />
+    <Content Include="assets\css\mdbpro.min.css" />
+    <Content Include="assets\css\style.min.css" />
     <Content Include="assets\img\cabecalho.png" />
     <Content Include="assets\img\cabecalho-color.png" />
     <Content Include="assets\img\favicon-unifaj.png" />
+    <Content Include="Interop.CPConnect.dll" />
     <Content Include="vendor\bootstrap\css\bootstrap.min.css" />
     <Content Include="assets\css\login.css" />
-    <Content Include="vendor\bootstrap\js\bootstrap.bundle.min.js" />
-    <Content Include="vendor\jquery\jquery.easing.min.js" />
-    <Content Include="vendor\jquery\jquery.min.js" />
-    <Content Include="Contact.aspx" />
+    <Content Include="vendor\bootstrap\js\bootstrap.min.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
-    <Content Include="Default.aspx" />
-    <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -132,6 +136,26 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="assets\font\roboto\Roboto-Bold.eot" />
+    <Content Include="assets\font\roboto\Roboto-Bold.ttf" />
+    <Content Include="assets\font\roboto\Roboto-Bold.woff" />
+    <Content Include="assets\font\roboto\Roboto-Bold.woff2" />
+    <Content Include="assets\font\roboto\Roboto-Light.eot" />
+    <Content Include="assets\font\roboto\Roboto-Light.ttf" />
+    <Content Include="assets\font\roboto\Roboto-Light.woff" />
+    <Content Include="assets\font\roboto\Roboto-Light.woff2" />
+    <Content Include="assets\font\roboto\Roboto-Medium.eot" />
+    <Content Include="assets\font\roboto\Roboto-Medium.ttf" />
+    <Content Include="assets\font\roboto\Roboto-Medium.woff" />
+    <Content Include="assets\font\roboto\Roboto-Medium.woff2" />
+    <Content Include="assets\font\roboto\Roboto-Regular.eot" />
+    <Content Include="assets\font\roboto\Roboto-Regular.ttf" />
+    <Content Include="assets\font\roboto\Roboto-Regular.woff" />
+    <Content Include="assets\font\roboto\Roboto-Regular.woff2" />
+    <Content Include="assets\font\roboto\Roboto-Thin.eot" />
+    <Content Include="assets\font\roboto\Roboto-Thin.ttf" />
+    <Content Include="assets\font\roboto\Roboto-Thin.woff" />
+    <Content Include="assets\font\roboto\Roboto-Thin.woff2" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Login.aspx" />
     <Content Include="Scripts\bootstrap.js" />
@@ -162,36 +186,25 @@
     <Content Include="Scripts\WebForms\WebForms.js" />
     <Content Include="Scripts\WebForms\WebParts.js" />
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
-    <Content Include="Site.Master" />
+    <Content Include="assets\css\mdb.min.css" />
+    <Content Include="assets\js\mdb.min.js" />
+    <Content Include="vendor\bootstrap\js\popper.min.js" />
+    <Content Include="vendor\jquery-3.3.1.min.js" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
-    <Content Include="Site.Mobile.Master" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alunos.aspx.cs">
+      <DependentUpon>Alunos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Alunos.aspx.designer.cs">
+      <DependentUpon>Alunos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="_class\Coordenador.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="About.aspx.cs">
-      <DependentUpon>About.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="About.aspx.designer.cs">
-      <DependentUpon>About.aspx</DependentUpon>
-    </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Contact.aspx.cs">
-      <DependentUpon>Contact.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Contact.aspx.designer.cs">
-      <DependentUpon>Contact.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Default.aspx.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -203,20 +216,6 @@
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Site.Master.cs">
-      <DependentUpon>Site.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Site.Master.designer.cs">
-      <DependentUpon>Site.Master</DependentUpon>
-    </Compile>
-    <Compile Include="Site.Mobile.Master.cs">
-      <DependentUpon>Site.Mobile.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Site.Mobile.Master.designer.cs">
-      <DependentUpon>Site.Mobile.Master</DependentUpon>
-    </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -224,10 +223,10 @@
     <Compile Include="ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
     </Compile>
+    <Compile Include="_class\DAL.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="assets\js\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

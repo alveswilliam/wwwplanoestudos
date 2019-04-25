@@ -7,29 +7,36 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace wwwplanoestudos
-{
-
-
-    public partial class SiteMaster
-    {
-
+namespace wwwplanoestudos {
+    
+    
+    public partial class Alunos {
+        
         /// <summary>
-        /// HeadContent control.
+        /// form1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder HeadContent;
-
+        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        
         /// <summary>
-        /// MainContent control.
+        /// rblCurso control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
+        protected global::System.Web.UI.WebControls.RadioButtonList rblCurso;
+        
+        /// <summary>
+        /// gvAlunos control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvAlunos;
     }
 }
