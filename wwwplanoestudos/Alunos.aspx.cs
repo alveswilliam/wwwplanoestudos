@@ -17,12 +17,27 @@ namespace wwwplanoestudos
             try
             {
                 if (!IsPostBack)
+                {
                     CarregarCursos();
+                    PeriodoLetivo();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw ex;
+            }
+        }
 
-                throw;
+        public void PeriodoLetivo()
+        {
+            try
+            {
+                Periodo periodo = new Periodo();
+                Session["codperlet"] = periodo.CodPerlet;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
@@ -41,6 +56,31 @@ namespace wwwplanoestudos
             {
 
                 throw;
+            }
+        }
+
+        protected void rblCurso_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable dt = (DataTable)Session["coordinfo"];
+                
+
+                Aluno aluno = new Aluno
+                {
+                    CodColigada = Convert.ToInt16(dt.Rows[0]["CODCOLIGADA"]),
+                    CodPerlet = Session["codperlet"].ToString(),
+                    CodCurso = rblCurso.SelectedValue
+                };
+
+                DAL dal = new DAL();
+                DataTable dtAlunos = dal.AlunosPlano(aluno);
+                gvAlunos.DataSource = dtAlunos;
+                gvAlunos.DataBind();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
     }

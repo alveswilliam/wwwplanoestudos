@@ -202,6 +202,7 @@
     <Compile Include="Alunos.aspx.designer.cs">
       <DependentUpon>Alunos.aspx</DependentUpon>
     </Compile>
+    <Compile Include="_class\Aluno.cs" />
     <Compile Include="_class\Coordenador.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -224,6 +225,7 @@
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
     </Compile>
     <Compile Include="_class\DAL.cs" />
+    <Compile Include="_class\Periodo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
