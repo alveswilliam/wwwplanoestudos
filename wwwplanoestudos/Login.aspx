@@ -46,8 +46,8 @@
         }
 
         .intro-2 {
-            /*background: url("http://mdbootstrap.com/img/Photos/Horizontal/Nature/full page/img%20(11).jpg")no-repeat center center;*/
-            background-color: #fff; /*#2b304e*/
+            background: url("../assets/img/background.png") center center;
+            /*background-color: #fff; /*#2b304e*/
             background-size: cover;
         }
 

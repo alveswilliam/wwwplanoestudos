@@ -49,7 +49,7 @@ namespace wwwplanoestudos
 
                 rblCurso.DataSource = dt;
                 rblCurso.DataTextField = dt.Columns["CURSO"].ToString();
-                rblCurso.DataValueField = dt.Columns["CODCURSO"].ToString();
+                rblCurso.DataValueField = dt.Columns["VALOR"].ToString();
                 rblCurso.DataBind();
             }
             catch (Exception)
@@ -63,14 +63,12 @@ namespace wwwplanoestudos
         {
             try
             {
-                DataTable dt = (DataTable)Session["coordinfo"];
-                
-
                 Aluno aluno = new Aluno
                 {
-                    CodColigada = Convert.ToInt16(dt.Rows[0]["CODCOLIGADA"]),
+                    CodColigada = Convert.ToInt16(rblCurso.SelectedValue.Split('|')[1]),
+                    CodTipoCurso = Convert.ToInt16(rblCurso.SelectedValue.Split('|')[2]),
                     CodPerlet = Session["codperlet"].ToString(),
-                    CodCurso = rblCurso.SelectedValue
+                    CodCurso = rblCurso.SelectedValue.Split('|')[0]
                 };
 
                 DAL dal = new DAL();
@@ -81,6 +79,90 @@ namespace wwwplanoestudos
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        protected void gvAlunos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                Aluno aluno = new Aluno
+                {
+                    CodColigada = Convert.ToInt16(rblCurso.SelectedValue.Split('|')[1]),
+                    CodTipoCurso = Convert.ToInt16(rblCurso.SelectedValue.Split('|')[2]),
+                    CodPerlet = Session["codperlet"].ToString(),
+                    CodCurso = rblCurso.SelectedValue.Split('|')[0],
+                    RA = gvAlunos.SelectedDataKey.Value.ToString()
+                };
+
+                DAL dal = new DAL();
+
+                DataTable dt = dal.DisciplinasGrade(aluno);
+                gvGradeAluno.DataSource = dt;
+                gvGradeAluno.DataBind();
+
+                dt.Clear();
+                dt = dal.DisciplinasDependencia(aluno);
+                gvDependencia.DataSource = dt;
+                gvDependencia.DataBind();
+
+                dt.Clear();
+                dt = dal.DisciplinasCursando(aluno);
+                gvDisciplinasCursando.DataSource = dt;
+                gvDisciplinasCursando.DataBind();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        protected void btnAceitar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Aluno aluno = new Aluno
+                {
+                    CodColigada = Convert.ToInt16(rblCurso.SelectedValue.Split('|')[1]),
+                    CodTipoCurso = Convert.ToInt16(rblCurso.SelectedValue.Split('|')[2]),
+                    CodPerlet = Session["codperlet"].ToString(),
+                    CodCurso = rblCurso.SelectedValue.Split('|')[0],
+                    RA = gvAlunos.SelectedDataKey.Value.ToString()
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public bool AceitarGrade(Aluno aluno)
+        {
+            try
+            {
+                DAL dal = new DAL();
+                dal.AtualizaStatusSMatricPl(aluno);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return true;
+        }
+
+        protected void btnRejeitar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }

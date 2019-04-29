@@ -27,25 +27,27 @@ namespace wwwplanoestudos._class
             try
             {
                 cmd.CommandText = @"SELECT DISTINCT
-                                           SH.CODCOLIGADA,
-                                           SH.CODFILIAL,
+                                           SHF.CODCOLIGADA,
+										   SHF.CODTIPOCURSO,
+                                           SHF.CODFILIAL,
                                            PP.NOME,
                                            SC.CODCURSO,
-                                           SC.NOME CURSO
+                                           SC.NOME CURSO,
+                                           SC.CODCURSO  + '|' +  CONVERT(VARCHAR, SHF.CODCOLIGADA) + '|' + CONVERT(VARCHAR,SHF.CODTIPOCURSO) VALOR
 
                                       FROM
                                            SCOORDENADOR SCO (NOLOCK)
 
-                                           INNER JOIN SHABILITACAOFILIAL SH (NOLOCK)
-                                           ON SCO.IDHABILITACAOFILIAL = SH.IDHABILITACAOFILIAL
-                                           AND SCO.CODCOLIGADA = SH.CODCOLIGADA
+                                           INNER JOIN SHABILITACAOFILIAL SHF (NOLOCK)
+                                           ON SCO.IDHABILITACAOFILIAL = SHF.IDHABILITACAOFILIAL
+                                           AND SCO.CODCOLIGADA = SHF.CODCOLIGADA
 
                                            INNER JOIN PPESSOA PP (NOLOCK)
                                            ON SCO.CODPESSOA = PP.CODIGO
 
                                            INNER JOIN SCURSO SC (NOLOCK)
                                            ON SCO.CODCOLIGADA = SC.CODCOLIGADA
-                                           AND SH.CODCURSO = SC.CODCURSO
+                                           AND SHF.CODCURSO = SC.CODCURSO
 
                                            INNER JOIN GUSUARIO GU (NOLOCK)
                                            ON PP.CODUSUARIO = GU.CODUSUARIO
@@ -58,7 +60,6 @@ namespace wwwplanoestudos._class
                                            SC.NOME";
 
                 cmd.Parameters.Clear();
-                //cmd.Parameters.AddWithValue("CODCOLIGADA", coordenador.CodColigada);
                 cmd.Parameters.AddWithValue("CODUSUARIO", coordenador.CodUsuario);
 
                 cmd.CommandType = CommandType.Text;
@@ -194,8 +195,8 @@ namespace wwwplanoestudos._class
                                            END DIA,
 								           SHO.HORAINICIAL,
 								           STD.CODDISC,
-								           SD.NOME AS DISCIPLINA,
-                                           SC.NOME AS CURSO,
+								           SD.NOME DISCIPLINA,
+                                           SC.NOME CURSO,
 								           SM.IDPERLET
                                 
 								      FROM
@@ -266,9 +267,9 @@ namespace wwwplanoestudos._class
 								           SHO.HORAINICIAL";
 
                 cmd.Parameters.Clear();
-                cmd.Parameters.AddWithValue("CODCOLIGADA", aluno.CodColigada);
-                cmd.Parameters.AddWithValue("RA", aluno.RA);
-                cmd.Parameters.AddWithValue("CODPERLET", aluno.CodPerlet);
+                cmd.Parameters.Add("CODCOLIGADA", SqlDbType.SmallInt).Value = aluno.CodColigada;
+                cmd.Parameters.Add("RA", SqlDbType.VarChar, 20).Value = aluno.RA;
+                cmd.Parameters.Add("CODPERLET", SqlDbType.VarChar, 10).Value = aluno.CodPerlet;
 
                 cmd.CommandType = CommandType.Text;
                 conn.Open();
@@ -302,16 +303,83 @@ namespace wwwplanoestudos._class
 
             try
             {
-                cmd.CommandText = @"";
+                cmd.CommandText = @"SELECT DISTINCT
+                                           CASE
+                                               WHEN SH.CODDISC = (SELECT TOP 1 coddisc1 FROM zEquivalencias (NOLOCK) WHERE CODCOL = SDG.CODCOLIGADA AND coddisc2 = SDG.CODDISC) THEN  (SELECT coddisc2 FROM zEquivalencias (NOLOCK) WHERE CODCOL = SDG.CODCOLIGADA AND coddisc1 = SH.CODDISC)
+                                               ELSE SDG.CODDISC
+                                           END CODDISC,
+                                           SD.NOME DISCIPLINA,
+                                           CASE
+											   WHEN SH.CODPERLET IS NULL THEN 'CURSAR'
+											   ELSE (SELECT TOP 1 CODPERLET FROM SHISTORICO (NOLOCK) WHERE CODCOLIGADA = SH.CODCOLIGADA AND RA = SH.RA AND CODDISC = SH.CODDISC ORDER BY CODPERLET DESC)
+										   END CODPERLET
+                                            
+									  FROM
+                                           SDISCGRADE SDG (NOLOCK)
+
+                                           INNER JOIN SHABILITACAOFILIAL SHF (NOLOCK)
+                                           ON SDG.CODCOLIGADA = SHF.CODCOLIGADA
+                                           AND SDG.CODGRADE = SHF.CODGRADE
+                                           AND SDG.CODHABILITACAO = SHF.CODHABILITACAO                                       
+
+                                           INNER JOIN SDISCIPLINA SD (NOLOCK)
+                                           ON SDG.CODCOLIGADA = SD.CODCOLIGADA
+                                           AND SDG.CODDISC = SD.CODDISC
+
+                                           INNER JOIN SHABILITACAOALUNO SHA (NOLOCK)
+                                           ON SHF.CODCOLIGADA = SHA.CODCOLIGADA
+                                           AND SHF.IDHABILITACAOFILIAL = SHA.IDHABILITACAOFILIAL
+                                           
+                                           INNER JOIN SSTATUS SS (NOLOCK)
+                                           ON SHA.CODCOLIGADA = SS.CODCOLIGADA
+                                           AND SHA.CODSTATUS = SS.CODSTATUS
+
+                                           INNER JOIN SMATRICPL SMPL (NOLOCK)
+                                           ON SDG.CODCOLIGADA = SMPL.CODCOLIGADA
+                                           AND SHF.CODCOLIGADA = SMPL.CODCOLIGADA
+                                           AND SHF.IDHABILITACAOFILIAL = SMPL.IDHABILITACAOFILIAL
+                                           AND SHA.RA = SMPL.RA
+
+                                           INNER JOIN SPLETIVO SPL (NOLOCK)
+                                           ON SMPL.CODCOLIGADA = SPL.CODCOLIGADA
+                                           AND SMPL.IDPERLET = SPL.IDPERLET
+                                           AND SMPL.PERIODO > =  SDG.CODPERIODO
+
+                                           LEFT JOIN SHISTORICO SH (NOLOCK)
+                                           ON SDG.CODCOLIGADA = SH.CODCOLIGADA
+                                           AND SDG.CODDISC = SH.CODDISC
+                                           AND SHA.RA = SH.RA
+
+                                     WHERE
+										   SDG.CODCOLIGADA = @CODCOLIGADA
+                                           AND SHA.RA = @RA
+										   AND SPL.CODTIPOCURSO = @CODTIPOCURSO
+										   AND SDG.CODCURSO = @CODCURSO
+                                           AND (SH.CODPERLET <> @CODPERLET OR SH.CODPERLET IS NULL)
+										   AND SDG.CODPERIODO <> @CODPERIODO
+										   AND SS.DESCRICAO IN ('Cursando','Plano_pago','Plano', 'Cursado', 'Confirmação', 'Fies-Cursando', 'Inadimplente')
+                                           AND (SH.RESULTADO IN ('Reprovado por Falta', 'Reprovado por Nota', 'Reprovado por Exame', 'A Cursar') OR SH.RESULTADO IS NULL)
+                                           
+										   AND NOT EXISTS (SELECT T2.coddisc2 FROM SHISTORICO T1 (NOLOCK) INNER JOIN zEquivalencias T2 (NOLOCK) ON T1.CODCOLIGADA = T2.CODCOL AND T1.CODDISC = T2.coddisc1  WHERE T1.CODCOLIGADA = SDG.CODCOLIGADA AND T1.RA = SHA.RA AND T1.RESULTADO IN ('Aprovado','AE') and T2.coddisc2 = SDG.CODDISC)
+										   AND NOT EXISTS (SELECT CODDISC FROM SHISTORICO (NOLOCK) WHERE CODCOLIGADA = SDG.CODCOLIGADA AND RA = SHA.RA AND CODDISC = SDG.CODDISC AND RESULTADO IN ('Aprovado','AE') )
+                                           AND NOT EXISTS (SELECT Z.coddisc2 FROM SMATRICULA SM (NOLOCK) INNER JOIN STURMADISC STD (NOLOCK) ON SM.CODCOLIGADA = STD.CODCOLIGADA AND SM.IDPERLET = STD.IDPERLET AND SM.IDTURMADISC = STD.IDTURMADISC INNER JOIN zEquivalencias Z (NOLOCK) ON Z.codcol = STD.CODCOLIGADA AND Z.coddisc1 = STD.CODDISC INNER JOIN SSTATUS SS (NOLOCK) ON SS.CODCOLIGADA = SM.CODCOLIGADA AND SS.CODSTATUS = SM.CODSTATUS WHERE SM.CODCOLIGADA = SDG.CODCOLIGADA AND SM.RA = SH.RA AND Z.coddisc2 = SDG.CODDISC AND SS.DESCRICAO IN ('Cursando','Plano_pago','Plano', 'Confirmação', 'Inadimplente'))
+                                           AND NOT EXISTS (SELECT STD.CODDISC FROM SMATRICULA SM (NOLOCK) INNER JOIN STURMADISC STD (NOLOCK) ON SM.CODCOLIGADA = STD.CODCOLIGADA AND SM.IDPERLET = STD.IDPERLET AND SM.IDTURMADISC = STD.IDTURMADISC INNER JOIN SSTATUS SS (NOLOCK) ON SS.CODCOLIGADA = SM.CODCOLIGADA AND SS.CODSTATUS = SM.CODSTATUS WHERE SM.CODCOLIGADA = SDG.CODCOLIGADA AND SM.RA = SH.RA AND STD.CODDISC = SDG.CODDISC AND SS.DESCRICAO  IN ('Cursando','Plano_pago','Plano', 'Confirmação', 'Inadimplente')) 		
+                                           
+								  ORDER BY
+										   SD.NOME";
 
                 cmd.Parameters.Clear();
-                cmd.Parameters.AddWithValue("CODCOLIGADA", aluno.CodColigada);
-                cmd.Parameters.AddWithValue("CODPERLET", aluno.CodPerlet);
-                cmd.Parameters.AddWithValue("CODCURSO", aluno.CodCurso);
+                cmd.Parameters.Add("CODCOLIGADA", SqlDbType.SmallInt).Value = aluno.CodColigada;
+                cmd.Parameters.Add("RA", SqlDbType.VarChar, 20).Value = aluno.RA;
+                cmd.Parameters.Add("CODTIPOCURSO", SqlDbType.SmallInt).Value = aluno.CodTipoCurso;
+                cmd.Parameters.Add("CODCURSO", SqlDbType.VarChar, 10).Value = aluno.CodCurso;
+                cmd.Parameters.Add("CODPERLET", SqlDbType.VarChar, 10).Value = aluno.CodPerlet;
+                cmd.Parameters.Add("CODPERIODO", SqlDbType.SmallInt).Value = 0;
 
                 cmd.CommandType = CommandType.Text;
                 conn.Open();
                 cmd.Connection = conn;
+                cmd.CommandTimeout = 180;
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -341,12 +409,45 @@ namespace wwwplanoestudos._class
 
             try
             {
-                cmd.CommandText = @"";
+                cmd.CommandText = @"SELECT
+                                           STD.CODDISC,
+                                           SD.NOME DISCIPLINA,
+                                           SP.CODPERLET
+
+                                      FROM
+                                           SMATRICULA SM (NOLOCK)
+
+                                           INNER JOIN STURMADISC STD (NOLOCK)
+                                           ON SM.CODCOLIGADA = STD.CODCOLIGADA
+                                           AND SM.IDTURMADISC = STD.IDTURMADISC
+                                           AND SM.IDPERLET = STD.IDPERLET 
+
+                                           INNER JOIN SSTATUS SS (NOLOCK)
+                                           ON SS.CODCOLIGADA = SM.CODCOLIGADA
+                                           AND SS.CODSTATUS = SM.CODSTATUS
+                                           AND STD.CODTIPOCURSO = SS.CODTIPOCURSO
+
+                                           INNER JOIN SDISCIPLINA SD (NOLOCK)
+                                           ON SD.CODCOLIGADA = STD.CODCOLIGADA
+                                           AND SD.CODDISC = STD.CODDISC
+                                           AND STD.CODTIPOCURSO = SD.CODTIPOCURSO
+
+                                           INNER JOIN SPLETIVO SP (NOLOCK)
+                                           ON SP.CODCOLIGADA = STD.CODCOLIGADA
+                                           AND SP.IDPERLET = STD.IDPERLET
+                                           AND STD.CODTIPOCURSO = SP.CODTIPOCURSO
+
+                                     WHERE
+                                           SM.RA = @RA
+                                           AND SP.CODPERLET = @CODPERLET
+                                           AND SS.DESCRICAO IN ('Cursando', 'Confirmação', 'Fies-Cursando', 'Inadimplente')
+
+                                  ORDER BY
+                                           SD.NOME";
 
                 cmd.Parameters.Clear();
-                cmd.Parameters.AddWithValue("CODCOLIGADA", aluno.CodColigada);
-                cmd.Parameters.AddWithValue("CODPERLET", aluno.CodPerlet);
-                cmd.Parameters.AddWithValue("CODCURSO", aluno.CodCurso);
+                cmd.Parameters.Add("RA", SqlDbType.VarChar, 20).Value = aluno.RA;
+                cmd.Parameters.Add("CODPERLET", SqlDbType.VarChar, 10).Value = aluno.CodPerlet;
 
                 cmd.CommandType = CommandType.Text;
                 conn.Open();
@@ -370,6 +471,214 @@ namespace wwwplanoestudos._class
             }
 
             return dt;
+        }
+
+        /* Retorna o valor do CODSTATUS referente aos status de matrícula 'Plano', 'Plano_pago', 'Confirmação'. */
+        public Aluno CodigoStatus(Aluno aluno)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+
+            try
+            {
+                cmd.CommandText = @"SELECT
+                                           CODSTATUS,
+                                           DESCRICAO
+
+                                      FROM
+                                           SSTATUS (NOLOCK)
+
+                                     WHERE
+                                           CODCOLIGADA = @CODCOLIGADA
+                                           AND CODTIPOCURSO = @CODTIPOCURSO
+                                           AND DESCRICAO IN ('Plano', 'Plano_pago', 'Confirmação')";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.Add("RA", SqlDbType.VarChar, 20).Value = aluno.RA;
+                cmd.Parameters.Add("CODPERLET", SqlDbType.VarChar, 10).Value = aluno.CodPerlet;
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                    while(reader.Read())
+                    {
+                        if (reader["DESCRICAO"].ToString() == "Plano")
+                            aluno.CodStatusPlano = Convert.ToInt32(reader["DESCRICAO"]);
+
+                        if (reader["DESCRICAO"].ToString() == "Plano_pago")
+                            aluno.CodStatusPlanoPago = Convert.ToInt32(reader["DESCRICAO"]);
+
+                        if (reader["DESCRICAO"].ToString() == "Confirmação")
+                            aluno.CodStatusConfirmacao = Convert.ToInt32(reader["DESCRICAO"]);
+                    }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return aluno;
+        }
+
+        /* Atualiza o CODSTATUS da SMATRICPL. */
+        public bool AtualizaStatusSMatricPl(Aluno aluno)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+
+            try
+            {
+                cmd.CommandText = @"UPDATE SMATRICPL
+                                       SET
+                                           CODSTATUS = @CODSTATUSCONFIRMACAO,
+                                           RECMODIFIEDBY = @RECMODIFIEDBY,
+                                           RECMODIFIEDON = @RECMODIFIEDON
+
+                                     WHERE
+                                           RA = @RA
+                                           AND CODCOLIGADA = @CODCOLIGADA
+                                           AND IDPERLET = @IDPERLET
+                                           AND CODSTATUS IN (@CODSTATUSPLANO, @CODSTATUSPLANO_PAGO)";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("CODSTATUSCONFIRMACAO", aluno.CodStatusConfirmacao);
+                cmd.Parameters.AddWithValue("RECMODIFIEDBY", aluno.UsuarioAlteracao);
+                cmd.Parameters.AddWithValue("RECMODIFIEDON", DateTime.Now);
+                cmd.Parameters.AddWithValue("RA", aluno.RA);
+                cmd.Parameters.AddWithValue("CODCOLIGADA", aluno.CodColigada);
+                cmd.Parameters.AddWithValue("IDPERLET", aluno.IdPerlet);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO", aluno.CodStatusPlano);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", aluno.CodStatusPlanoPago);
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return true;
+        }
+
+        /* Atualiza o CODSTATUS da SMATRICULA. */
+        public bool AtualizaStatusSMatricula(Aluno aluno)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+
+            try
+            {
+                cmd.CommandText = @"UPDATE SMATRICULA
+                                       SET
+                                           CODSTATUS = @CODSTATUSCONFIRMACAO,
+                                           RECMODIFIEDBY = @RECMODIFIEDBY,
+                                           RECMODIFIEDON = @RECMODIFIEDON
+
+                                     WHERE
+                                           RA = @RA
+                                           AND CODCOLIGADA = @CODCOLIGADA
+                                           AND IDPERLET = @IDPERLET
+                                           AND CODSTATUS IN (@CODSTATUSPLANO, @CODSTATUSPLANO_PAGO)";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("CODSTATUSCONFIRMACAO", aluno.CodStatusConfirmacao);
+                cmd.Parameters.AddWithValue("RECMODIFIEDBY", aluno.UsuarioAlteracao);
+                cmd.Parameters.AddWithValue("RECMODIFIEDON", DateTime.Now);
+                cmd.Parameters.AddWithValue("RA", aluno.RA);
+                cmd.Parameters.AddWithValue("CODCOLIGADA", aluno.CodColigada);
+                cmd.Parameters.AddWithValue("IDPERLET", aluno.IdPerlet);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO", aluno.CodStatusPlano);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", aluno.CodStatusPlanoPago);
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return true;
+        }
+
+        /* Atualiza o CODSTATUS da SHABILITACAOALUNO. */
+        public bool AtualizaStatusSHabilitacaoAluno(Aluno aluno)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+
+            try
+            {
+                cmd.CommandText = @"UPDATE SHABILITACAOALUNO
+                                       SET
+                                           CODSTATUS = @CODSTATUSCONFIRMACAO,
+                                           RECMODIFIEDBY = @RECMODIFIEDBY,
+                                           RECMODIFIEDON = @RECMODIFIEDON
+
+                                     WHERE
+                                           RA = @RA
+                                           AND CODCOLIGADA = @CODCOLIGADA
+                                           AND CODSTATUS IN (@CODSTATUSPLANO, @CODSTATUSPLANO_PAGO)";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("CODSTATUSCONFIRMACAO", aluno.CodStatusConfirmacao);
+                cmd.Parameters.AddWithValue("RECMODIFIEDBY", aluno.UsuarioAlteracao);
+                cmd.Parameters.AddWithValue("RECMODIFIEDON", DateTime.Now);
+                cmd.Parameters.AddWithValue("RA", aluno.RA);
+                cmd.Parameters.AddWithValue("CODCOLIGADA", aluno.CodColigada);
+                cmd.Parameters.AddWithValue("IDPERLET", aluno.IdPerlet);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO", aluno.CodStatusPlano);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", aluno.CodStatusPlanoPago);
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return true;
         }
     }
 }

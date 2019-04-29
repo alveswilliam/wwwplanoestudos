@@ -110,10 +110,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Alterar.aspx" />
     <Content Include="Alunos.aspx" />
     <Content Include="assets\css\radio-check.css" />
     <Content Include="assets\css\mdbpro.min.css" />
     <Content Include="assets\css\style.min.css" />
+    <Content Include="assets\img\background.png" />
     <Content Include="assets\img\cabecalho.png" />
     <Content Include="assets\img\cabecalho-color.png" />
     <Content Include="assets\img\favicon-unifaj.png" />
@@ -195,6 +197,13 @@
     <Content Include="Bundle.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alterar.aspx.cs">
+      <DependentUpon>Alterar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Alterar.aspx.designer.cs">
+      <DependentUpon>Alterar.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Alunos.aspx.cs">
       <DependentUpon>Alunos.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
