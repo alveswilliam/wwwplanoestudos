@@ -119,6 +119,7 @@
     <Content Include="assets\img\cabecalho.png" />
     <Content Include="assets\img\cabecalho-color.png" />
     <Content Include="assets\img\favicon-unifaj.png" />
+    <Content Include="Teste.aspx" />
     <Content Include="vendor\bootstrap\css\bootstrap.min.css" />
     <Content Include="assets\css\login.css" />
     <Content Include="vendor\bootstrap\js\bootstrap.min.js" />
@@ -209,6 +210,13 @@
     </Compile>
     <Compile Include="Alunos.aspx.designer.cs">
       <DependentUpon>Alunos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Teste.aspx.cs">
+      <DependentUpon>Teste.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Teste.aspx.designer.cs">
+      <DependentUpon>Teste.aspx</DependentUpon>
     </Compile>
     <Compile Include="_class\Aluno.cs" />
     <Compile Include="_class\Coordenador.cs" />

@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Plano de Ensino - Alunos | UniFAJ - UniMax - FAAGROH</title>
+    <title>Plano de Estudos - Alunos | UniFAJ - UniMax - FAAGROH</title>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -93,13 +93,11 @@
             </div>
         </div>
     </div>
-    
+
     <form id="form1" runat="server">
         <main>
             <div class="container">
-
                 <section class="mt-5 wow fadeIn">
-                    
                     <div class="row">
                         <div class="col-md-12 mb-4">
                             <h3 class="h3 mb-3">Instituição</h3>
@@ -133,16 +131,23 @@
                     </div>
 
                     <div class="row">
+                        <div class="col-md-12 mb-4 text-center">
+                            <h3 class="h3 mb-3">Alunos em Plano/Plano-pago</h3>
+                        </div>
                         <div class="col-md-12 mb-4">
-                            <asp:GridView ID="gvAlunos" runat="server" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="RA" OnSelectedIndexChanged="gvAlunos_SelectedIndexChanged">
+                            <asp:GridView ID="gvAlunos" runat="server" AutoGenerateColumns="false" CssClass="table table-responsive" GridLines="None" DataKeyNames="RA" OnSelectedIndexChanged="gvAlunos_SelectedIndexChanged">
                                 <Columns>
-                                    <asp:CommandField ShowSelectButton="true" SelectText="Selecionar" ButtonType="Button" />
+                                    <asp:CommandField ShowSelectButton="true" SelectText="" ControlStyle-CssClass="fa fa-arrow-right" />
                                     <asp:BoundField DataField="RA" HeaderText="RA"></asp:BoundField>
                                     <asp:BoundField DataField="NOME" HeaderText="Nome"></asp:BoundField>
                                     <asp:BoundField DataField="TELEFONE1" HeaderText="Telefone"></asp:BoundField>
                                     <asp:BoundField DataField="EMAIL" HeaderText="E-mail"></asp:BoundField>
+                                    <asp:BoundField DataField="DESCRICAO" HeaderText="Status"></asp:BoundField>
                                     <asp:BoundField DataField="STATUS" HeaderText="Situação"></asp:BoundField>
                                 </Columns>
+                                <HeaderStyle BackColor="#808080" Font-Bold="True" ForeColor="White"></HeaderStyle>
+                                <RowStyle BackColor="#ffffff"></RowStyle>
+                                <SelectedRowStyle BackColor="#fef4bf" Font-Bold="True" ForeColor="#333333"></SelectedRowStyle>
                             </asp:GridView>
                         </div>
                     </div>
@@ -155,7 +160,7 @@
 
                     <div class="row wow fadeIn">
                         <div class="col-lg-12 col-md-12 px-4">
-                            <asp:GridView ID="gvGradeAluno" runat="server" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="DIASEMANA, IDPERLET" ShowHeaderWhenEmpty="true" EmptyDataText="Não há disciplinas">
+                            <asp:GridView ID="gvGradeAluno" runat="server" AutoGenerateColumns="false" CssClass="table table-responsive" DataKeyNames="DIASEMANA, IDPERLET" ShowHeaderWhenEmpty="true" EmptyDataText="Não há disciplinas">
                                 <Columns>
                                     <asp:BoundField DataField="DIASEMANA" HeaderText="DIASEMANA" Visible="false"></asp:BoundField>
                                     <asp:BoundField DataField="DIA" HeaderText="Dia"></asp:BoundField>
@@ -165,6 +170,8 @@
                                     <asp:BoundField DataField="CURSO" HeaderText="Curso"></asp:BoundField>
                                     <asp:BoundField DataField="IDPERLET" HeaderText="IDPERLET" Visible="false"></asp:BoundField>
                                 </Columns>
+                                <HeaderStyle BackColor="#2b304e" Font-Bold="True" ForeColor="White"></HeaderStyle>
+                                <RowStyle BackColor="#ffffff"></RowStyle>
                             </asp:GridView>
                         </div>
                     </div>
@@ -173,12 +180,14 @@
 
                     <div class="row wow fadeIn">
                         <div class="col-lg-6 col-md-12 px-4">
-                            <asp:GridView ID="gvDependencia" runat="server" AutoGenerateColumns="false" CssClass="table table-hover" ShowHeaderWhenEmpty="true" EmptyDataText="Não há disciplinas">
+                            <asp:GridView ID="gvDependencia" runat="server" AutoGenerateColumns="false" CssClass="table table-responsive" ShowHeaderWhenEmpty="true" EmptyDataText="Não há disciplinas">
                                 <Columns>
                                     <asp:BoundField DataField="CODDISC" HeaderText="Cód. Disc."></asp:BoundField>
                                     <asp:BoundField DataField="DISCIPLINA" HeaderText="Disciplina"></asp:BoundField>
                                     <asp:BoundField DataField="CODPERLET" HeaderText="Período"></asp:BoundField>
                                 </Columns>
+                                <HeaderStyle BackColor="#2b304e" Font-Bold="True" ForeColor="White"></HeaderStyle>
+                                <RowStyle BackColor="#ffffff"></RowStyle>
                             </asp:GridView>
 
                         </div>
@@ -188,12 +197,14 @@
 
                     <div class="row wow fadeIn">
                         <div class="col-lg-6 col-md-12 px-4">
-                            <asp:GridView ID="gvDisciplinasCursando" runat="server" AutoGenerateColumns="false" CssClass="table table-hover" ShowHeaderWhenEmpty="true" EmptyDataText="Não há disciplinas">
+                            <asp:GridView ID="gvDisciplinasCursando" runat="server" AutoGenerateColumns="false" CssClass="table table-responsive" ShowHeaderWhenEmpty="true" EmptyDataText="Não há disciplinas">
                                 <Columns>
                                     <asp:BoundField DataField="CODDISC" HeaderText="Cód. Disc."></asp:BoundField>
                                     <asp:BoundField DataField="DISCIPLINA" HeaderText="Disciplina"></asp:BoundField>
                                     <asp:BoundField DataField="CODPERLET" HeaderText="Período"></asp:BoundField>
                                 </Columns>
+                                <HeaderStyle BackColor="#2b304e" Font-Bold="True" ForeColor="White"></HeaderStyle>
+                                <RowStyle BackColor="#ffffff"></RowStyle>
                             </asp:GridView>
                         </div>
                     </div>
@@ -208,7 +219,7 @@
                     </div>
 
                 </section>
-                
+
             </div>
         </main>
     </form>
@@ -262,7 +273,7 @@
                 <i class="fab fa-codepen mr-3"></i>
             </a>
         </div>
-        
+
         <div class="footer-copyright py-3">
             © 2019 Copyright:
      
