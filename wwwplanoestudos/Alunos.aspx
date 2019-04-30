@@ -99,6 +99,31 @@
             <div class="container">
 
                 <section class="mt-5 wow fadeIn">
+                    
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                            <h3 class="h3 mb-3">Instituição</h3>
+                            <asp:RadioButtonList ID="rblInstituicao" runat="server" CssClass="radio radio-info" RepeatDirection="Horizontal" AutoPostBack="true" OnSelectedIndexChanged="rblInstituicao_SelectedIndexChanged"></asp:RadioButtonList>
+                            <hr />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                            <h3 class="h3 mb-3">Campus</h3>
+                            <asp:RadioButtonList ID="rblCampus" runat="server" CssClass="radio radio-info" RepeatDirection="Horizontal" AutoPostBack="true" OnSelectedIndexChanged="rblCampus_SelectedIndexChanged"></asp:RadioButtonList>
+                            <hr />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                            <h3 class="h3 mb-3">Contexto</h3>
+                            <asp:RadioButtonList ID="rblContexto" runat="server" CssClass="radio radio-info" RepeatDirection="Horizontal" AutoPostBack="true" OnSelectedIndexChanged="rblContexto_SelectedIndexChanged"></asp:RadioButtonList>
+                            <hr />
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-12 mb-4">
                             <h3 class="h3 mb-3">Curso</h3>
@@ -130,7 +155,7 @@
 
                     <div class="row wow fadeIn">
                         <div class="col-lg-12 col-md-12 px-4">
-                            <asp:GridView ID="gvGradeAluno" runat="server" AutoGenerateColumns="false" CssClass="table table-hover" ShowHeaderWhenEmpty="true" EmptyDataText="Não há disciplinas">
+                            <asp:GridView ID="gvGradeAluno" runat="server" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="DIASEMANA, IDPERLET" ShowHeaderWhenEmpty="true" EmptyDataText="Não há disciplinas">
                                 <Columns>
                                     <asp:BoundField DataField="DIASEMANA" HeaderText="DIASEMANA" Visible="false"></asp:BoundField>
                                     <asp:BoundField DataField="DIA" HeaderText="Dia"></asp:BoundField>

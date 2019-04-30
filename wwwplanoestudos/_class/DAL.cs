@@ -12,14 +12,84 @@ namespace wwwplanoestudos._class
     {
         SqlConnection conn = new SqlConnection();
         SqlCommand cmd = new SqlCommand();
+        SqlTransaction trans = null;
 
         public DAL()
         {
 
         }
 
-        /* Cursos do coordenador */
-        public DataTable ValidaCoordenador(Coordenador coordenador)
+        /* Valida se o coordenador é ativo. */
+        public bool ValidaCoordenador(Coordenador coordenador)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+
+            try
+            {
+                cmd.CommandText = @"SELECT DISTINCT
+                                           PP.NOME
+
+                                      FROM
+                                           SCOORDENADOR SCO (NOLOCK)
+
+                                           INNER JOIN SHABILITACAOFILIAL SHF (NOLOCK)
+                                           ON SCO.IDHABILITACAOFILIAL = SHF.IDHABILITACAOFILIAL
+                                           AND SCO.CODCOLIGADA = SHF.CODCOLIGADA
+
+                                           INNER JOIN PPESSOA PP (NOLOCK)
+                                           ON SCO.CODPESSOA = PP.CODIGO
+
+                                           INNER JOIN SCURSO SC (NOLOCK)
+                                           ON SCO.CODCOLIGADA = SC.CODCOLIGADA
+                                           AND SHF.CODCURSO = SC.CODCURSO
+
+										   INNER JOIN PFUNC PF (NOLOCK)
+											ON SCO.CODCOLIGADA = PF.CODCOLIGADA
+											AND SCO.CODPESSOA = PF.CODPESSOA
+
+                                     WHERE
+                                           PP.CODUSUARIO = @CODUSUARIO
+                                           AND SCO.DTFIM IS NULL
+										   AND PF.CODSITUACAO NOT IN ('D', 'P', 'L', 'Z', 'T', 'I')
+
+                                  ORDER BY
+                                           PP.NOME";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("CODUSUARIO", coordenador.CodUsuario);
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    coordenador.Nome = reader["NOME"].ToString();
+                }
+                else
+                    return false;
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return true;
+        }
+
+        /* Instituição do coordenador */
+        public DataTable InstituicaoCoordenador(Coordenador coordenador)
         {
             conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
             DataTable dt = new DataTable();
@@ -28,12 +98,10 @@ namespace wwwplanoestudos._class
             {
                 cmd.CommandText = @"SELECT DISTINCT
                                            SHF.CODCOLIGADA,
-										   SHF.CODTIPOCURSO,
-                                           SHF.CODFILIAL,
-                                           PP.NOME,
-                                           SC.CODCURSO,
-                                           SC.NOME CURSO,
-                                           SC.CODCURSO  + '|' +  CONVERT(VARCHAR, SHF.CODCOLIGADA) + '|' + CONVERT(VARCHAR,SHF.CODTIPOCURSO) VALOR
+                                           CASE
+											   WHEN SHF.CODCOLIGADA = 1 THEN 'Centro Universitário de Jaguariúna'
+											   WHEN SHF.CODCOLIGADA = 5 THEN 'Centro Universitário Max Planck'
+										   END INSTITUICAO
 
                                       FROM
                                            SCOORDENADOR SCO (NOLOCK)
@@ -54,12 +122,233 @@ namespace wwwplanoestudos._class
 
                                      WHERE
                                            GU.CODUSUARIO = @CODUSUARIO
+										   AND SCO.CODCOLIGADA IN (1,5)
                                            AND SCO.DTFIM IS NULL
 
                                   ORDER BY
-                                           SC.NOME";
+                                           INSTITUICAO";
 
                 cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("CODUSUARIO", coordenador.CodUsuario);
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                dt.Load(reader);
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return dt;
+        }
+
+        /* Campus do coordenador */
+        public DataTable CampusCoordenador(Coordenador coordenador)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+            DataTable dt = new DataTable();
+
+            try
+            {
+                cmd.CommandText = @"SELECT DISTINCT
+                                           SCA.CODCAMPUS,
+										   CASE
+											   WHEN SCA.CODCAMPUS = '0001' THEN 'Campus I'
+											   WHEN SCA.CODCAMPUS = '0002' THEN 'Campus II'
+											   WHEN SCA.CODCAMPUS = '008' THEN 'FAAGROH'
+										   END CAMPUS
+
+                                      FROM
+                                           SCOORDENADOR SCO (NOLOCK)
+
+                                           INNER JOIN SHABILITACAOFILIAL SHF (NOLOCK)
+                                           ON SCO.IDHABILITACAOFILIAL = SHF.IDHABILITACAOFILIAL
+                                           AND SCO.CODCOLIGADA = SHF.CODCOLIGADA
+
+                                           INNER JOIN PPESSOA PP (NOLOCK)
+                                           ON SCO.CODPESSOA = PP.CODIGO
+
+                                           INNER JOIN SCURSO SC (NOLOCK)
+                                           ON SCO.CODCOLIGADA = SC.CODCOLIGADA
+                                           AND SHF.CODCURSO = SC.CODCURSO
+
+                                           INNER JOIN GUSUARIO GU (NOLOCK)
+                                           ON PP.CODUSUARIO = GU.CODUSUARIO
+
+										   INNER JOIN SHABILITACAOFILIALCAMPUS SHFC (NOLOCK)
+										   ON SCO.CODCOLIGADA = SHFC.CODCOLIGADA
+										   AND SCO.IDHABILITACAOFILIAL = SHFC.IDHABILITACAOFILIAL
+
+										   INNER JOIN SCAMPUS SCA (NOLOCK)
+										   ON SHFC.CODCAMPUS = SCA.CODCAMPUS
+
+                                     WHERE
+										   SCO.CODCOLIGADA = @CODCOLIGADA
+                                           AND GU.CODUSUARIO = @CODUSUARIO
+                                           AND SCO.DTFIM IS NULL
+
+                                  ORDER BY
+                                           CAMPUS";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("CODCOLIGADA", coordenador.CodColigada);
+                cmd.Parameters.AddWithValue("CODUSUARIO", coordenador.CodUsuario);
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                dt.Load(reader);
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return dt;
+        }
+
+        /* Contexto disponível para o coordenador. */
+        public DataTable Contexto(Coordenador coordenador)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+            DataTable dt = new DataTable();
+
+            try
+            {
+                cmd.CommandText = @"SELECT DISTINCT
+                                       STC.NOME,
+                                       STC.CODTIPOCURSO
+
+                                  FROM
+                                       SCOORDENADOR SCO (NOLOCK)
+
+                                       INNER JOIN SHABILITACAOFILIAL SHF (NOLOCK) ON
+                                       SCO.CODCOLIGADA = SHF.CODCOLIGADA
+                                       AND SCO.IDHABILITACAOFILIAL = SHF.IDHABILITACAOFILIAL
+
+                                       INNER JOIN PPESSOA PP (NOLOCK) ON
+                                       SCO.CODPESSOA = PP.CODIGO
+
+                                       INNER JOIN SCURSO SC (NOLOCK) ON
+                                       SCO.CODCOLIGADA = SC.CODCOLIGADA
+                                       AND SHF.CODCURSO = SC.CODCURSO
+                                       AND SHF.CODTIPOCURSO = SC.CODTIPOCURSO
+
+                                       INNER JOIN STIPOCURSO STC (NOLOCK) ON
+                                       SCO.CODCOLIGADA = STC.CODCOLIGADA
+                                       AND SHF.CODTIPOCURSO = STC.CODTIPOCURSO
+
+                                       INNER JOIN SHABILITACAOFILIALCAMPUS SHFC (NOLOCK)
+									   ON SCO.CODCOLIGADA = SHFC.CODCOLIGADA
+									   AND SCO.IDHABILITACAOFILIAL = SHFC.IDHABILITACAOFILIAL
+
+                                 WHERE
+                                       STC.CODCOLIGADA = @CODCOLIGADA
+                                       AND SHFC.CODCAMPUS = @CODCAMPUS
+                                       AND PP.CODUSUARIO = @CODUSUARIO
+                                       AND SCO.DTFIM IS NULL";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.Add("CODCOLIGADA", SqlDbType.SmallInt).Value = coordenador.CodColigada;
+                cmd.Parameters.Add("CODCAMPUS", SqlDbType.VarChar, 10).Value = coordenador.CodCampus;
+                cmd.Parameters.Add("CODUSUARIO", SqlDbType.VarChar, 20).Value = coordenador.CodUsuario;
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                dt.Load(reader);
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return dt;
+        }
+
+        /* Curso(s) do coordenador */
+        public DataTable CursoCoordenador(Coordenador coordenador)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+            DataTable dt = new DataTable();
+
+            try
+            {
+                cmd.CommandText = @"SELECT DISTINCT
+                                           SC.CODCURSO,
+                                           SC.NOME CURSO
+
+                                      FROM
+                                           SCOORDENADOR SCO (NOLOCK)
+
+                                           INNER JOIN SHABILITACAOFILIAL SHF (NOLOCK)
+                                           ON SCO.IDHABILITACAOFILIAL = SHF.IDHABILITACAOFILIAL
+                                           AND SCO.CODCOLIGADA = SHF.CODCOLIGADA
+
+                                           INNER JOIN PPESSOA PP (NOLOCK)
+                                           ON SCO.CODPESSOA = PP.CODIGO
+
+                                           INNER JOIN SCURSO SC (NOLOCK)
+                                           ON SCO.CODCOLIGADA = SC.CODCOLIGADA
+                                           AND SHF.CODCURSO = SC.CODCURSO
+
+                                           INNER JOIN GUSUARIO GU (NOLOCK)
+                                           ON PP.CODUSUARIO = GU.CODUSUARIO
+
+										   INNER JOIN SHABILITACAOFILIALCAMPUS SHFC (NOLOCK)
+										   ON SCO.CODCOLIGADA = SHFC.CODCOLIGADA
+										   AND SCO.IDHABILITACAOFILIAL = SHFC.IDHABILITACAOFILIAL
+
+										   INNER JOIN SCAMPUS SCA (NOLOCK)
+										   ON SHFC.CODCAMPUS = SCA.CODCAMPUS
+
+                                     WHERE
+										   SHF.CODCOLIGADA = @CODCOLIGADA
+                                           AND SHFC.CODCAMPUS = @CODCAMPUS
+                                           AND GU.CODUSUARIO = @CODUSUARIO
+                                           AND SCO.DTFIM IS NULL
+
+                                  ORDER BY
+                                           CURSO";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("CODCOLIGADA", coordenador.CodColigada);
+                cmd.Parameters.AddWithValue("CODCAMPUS", coordenador.CodCampus);
                 cmd.Parameters.AddWithValue("CODUSUARIO", coordenador.CodUsuario);
 
                 cmd.CommandType = CommandType.Text;
@@ -473,6 +762,57 @@ namespace wwwplanoestudos._class
             return dt;
         }
 
+        /* Retorna o valor do IDPERLET referente ao CODPERLET ativo na aplicação. */
+        public int IdPerlet(Coordenador coordenador)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+
+            try
+            {
+                cmd.CommandText = @"SELECT
+                                           IDPERLET
+
+                                      FROM
+                                           SPLETIVO (NOLOCK)
+
+                                     WHERE
+                                           CODCOLIGADA = @CODCOLIGADA
+                                           AND CODTIPOCURSO = @CODTIPOCURSO
+                                           AND CODPERLET = @CODPERLET";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.Add("CODCOLIGADA", SqlDbType.SmallInt).Value = coordenador.CodColigada;
+                cmd.Parameters.Add("CODTIPOCURSO", SqlDbType.SmallInt).Value = coordenador.CodTipoCurso;
+                cmd.Parameters.Add("CODPERLET", SqlDbType.VarChar, 10).Value = coordenador.CodPerlet;
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    coordenador.IdPerlet = Convert.ToInt32(reader["IDPERLET"]);
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return coordenador.IdPerlet;
+        }
+
         /* Retorna o valor do CODSTATUS referente aos status de matrícula 'Plano', 'Plano_pago', 'Confirmação'. */
         public Aluno CodigoStatus(Aluno aluno)
         {
@@ -563,12 +903,15 @@ namespace wwwplanoestudos._class
 
                 cmd.CommandType = CommandType.Text;
                 conn.Open();
+                trans = conn.BeginTransaction();
                 cmd.Connection = conn;
+                cmd.Transaction = trans;
 
                 cmd.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
+                trans.Rollback();
                 throw ex;
             }
             finally
@@ -612,13 +955,13 @@ namespace wwwplanoestudos._class
                 cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", aluno.CodStatusPlanoPago);
 
                 cmd.CommandType = CommandType.Text;
-                conn.Open();
                 cmd.Connection = conn;
 
                 cmd.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
+                trans.Rollback();
                 throw ex;
             }
             finally
@@ -661,13 +1004,14 @@ namespace wwwplanoestudos._class
                 cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", aluno.CodStatusPlanoPago);
 
                 cmd.CommandType = CommandType.Text;
-                conn.Open();
                 cmd.Connection = conn;
 
                 cmd.ExecuteNonQuery();
+                trans.Commit();
             }
             catch (Exception ex)
             {
+                trans.Rollback();
                 throw ex;
             }
             finally
@@ -675,6 +1019,7 @@ namespace wwwplanoestudos._class
                 if (conn.State == ConnectionState.Open)
                 {
                     conn.Close();
+                    trans.Dispose();
                 }
             }
 

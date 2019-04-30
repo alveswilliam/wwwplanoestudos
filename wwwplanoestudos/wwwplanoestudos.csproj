@@ -119,7 +119,6 @@
     <Content Include="assets\img\cabecalho.png" />
     <Content Include="assets\img\cabecalho-color.png" />
     <Content Include="assets\img\favicon-unifaj.png" />
-    <Content Include="Interop.CPConnect.dll" />
     <Content Include="vendor\bootstrap\css\bootstrap.min.css" />
     <Content Include="assets\css\login.css" />
     <Content Include="vendor\bootstrap\js\bootstrap.min.js" />

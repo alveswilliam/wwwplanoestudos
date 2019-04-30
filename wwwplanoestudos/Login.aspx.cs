@@ -54,11 +54,11 @@ namespace wwwplanoestudos
                     };
 
                     DAL dal = new DAL();
-                    DataTable dt = dal.ValidaCoordenador(coordenador);
-
-                    if (dt.Rows.Count > 0)
+                    
+                    if (dal.ValidaCoordenador(coordenador))
                     {
-                        Session["coordinfo"] = dt;
+                        Session["coordinfo"] = coordenador;
+                        //Session["codusuario"] = txtUsuario.Value;
                         Response.Redirect("Alunos.aspx", false);
                     }
                     else
