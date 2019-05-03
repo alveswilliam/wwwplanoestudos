@@ -1025,5 +1025,109 @@ namespace wwwplanoestudos._class
 
             return true;
         }
+
+        /* Verifica se o aluno tem plano cadastrado no período letivo. */
+        public bool TemPlano(Aluno aluno)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+
+            try
+            {
+                cmd.CommandText = @"SELECT
+                                           *
+
+                                      FROM
+                                           POLIS_PLANOS (NOLOCK)
+
+                                     WHERE
+                                           CODCOLIGADA = @CODCOLIGADA
+                                           AND RA = @RA
+                                           AND CODPERLET = @CODPERLET";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.Add("CODCOLIGADA", SqlDbType.SmallInt).Value = aluno.CodPerlet;
+                cmd.Parameters.Add("RA", SqlDbType.VarChar, 20).Value = aluno.RA;
+                cmd.Parameters.Add("CODPERLET", SqlDbType.VarChar, 10).Value = aluno.CodPerlet;
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return true;
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return false;
+        }
+
+        /* Atualiza o status da tabela POLIS_PLANOS. */
+        public bool AtualizaStatusPlano(Plano plano)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+
+            try
+            {
+                cmd.CommandText = @"UPDATE
+                                           POLIS_PLANOS
+
+                                       SET
+                                           STATUS = @STATUS,
+                                           RECMODIFIEDBY = @RECMODIFIEDBY,
+                                           RECMODIFIEDON = @RECMODIFIEDON
+
+                                     WHERE
+                                           CODCOLIGADA = @CODCOLIGADA
+                                           AND RA = @RA
+                                           AND IDPERLET = @IDPERLET";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("CODSTATUSCONFIRMACAO", plano.CodStatusConfirmacao);
+                cmd.Parameters.AddWithValue("RECMODIFIEDBY", plano.Usuario);
+                cmd.Parameters.AddWithValue("RECMODIFIEDON", DateTime.Now);
+                cmd.Parameters.AddWithValue("RA", plano.RA);
+                cmd.Parameters.AddWithValue("CODCOLIGADA", plano.CodColigada);
+                cmd.Parameters.AddWithValue("IDPERLET", plano.IdPerlet);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO", plano.CodStatusPlano);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", plano.CodStatusPlanoPago);
+
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = conn;
+
+                cmd.ExecuteNonQuery();
+                trans.Commit();
+            }
+            catch (Exception ex)
+            {
+                trans.Rollback();
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                    trans.Dispose();
+                }
+            }
+
+            return true;
+        }
     }
 }

@@ -261,7 +261,7 @@ namespace wwwplanoestudos
             }
         }
 
-        public bool AceitarGrade(Aluno aluno)
+        public bool AceitarGrade(Plano plano)
         {
             try
             {
@@ -269,6 +269,7 @@ namespace wwwplanoestudos
                 dal.AtualizaStatusSMatricPl(aluno);
                 dal.AtualizaStatusSMatricula(aluno);
                 dal.AtualizaStatusSHabilitacaoAluno(aluno);
+                dal.AtualizaStatusPlano(plano);
             }
             catch (Exception ex)
             {
@@ -283,6 +284,19 @@ namespace wwwplanoestudos
             try
             {
 
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        protected void btnAcessar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Response.Redirect("Alterar.aspx", false);
             }
             catch (Exception)
             {

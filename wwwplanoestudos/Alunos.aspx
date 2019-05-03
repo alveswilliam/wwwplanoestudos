@@ -51,7 +51,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#login">Alterar grade</a>
+                        <a class="nav-link" href="#login" onclick="acessoAluno()">Alterar grade</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" target="_blank">Gerados</a>
@@ -211,7 +211,7 @@
 
                 <hr />
 
-                <section id="login">
+                <section id="login" style="display:none">
                     <div class="container">
                         <div class="row">
                             <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto mt-lg-5">
@@ -234,7 +234,7 @@
                                         </div>
 
                                         <div class="text-center">
-                                            <asp:Button ID="btnAcessar" runat="server" Text="Acessar" CssClass="btn purple-gradient btn-lg" />
+                                            <asp:Button ID="btnAcessar" runat="server" Text="Acessar" CssClass="btn purple-gradient btn-lg" OnClick="btnAcessar_Click" />
                                             <hr />
                                             <div class="inline-ul text-center d-flex justify-content-center">
                                                 <a class="p-2 m-2">Esqueceu a senha?</a>
@@ -254,19 +254,16 @@
 
     <footer class="page-footer text-center font-small mt-4 wow fadeIn">
         <div class="pt-4">
-            
         </div>
 
         <hr class="my-4" />
 
         <div class="pb-4">
-            
         </div>
 
         <div class="footer-copyright py-3">
             &copy 2019 Copyright: UniFAJ
         </div>
-
     </footer>
 
 </body>
@@ -284,8 +281,8 @@
 
 <script>
     function acessoAluno() {
-        document.getElementById('divLoginAluno').style.display = 'inline';
-        document.getElementById('conteudo').style.display = 'none';
+        document.getElementById('login').style.display = 'inline';
+        //document.getElementById('disciplinas').style.display = 'none';
     }
 </script>
 
