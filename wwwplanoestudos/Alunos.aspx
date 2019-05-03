@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" />
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet" />
     <link href="assets/css/mdb.min.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/style.min.css" rel="stylesheet" />
     <link href="assets/css/radio-check.css" rel="stylesheet" />
@@ -30,8 +31,9 @@
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar">
         <div class="container">
 
-            <a class="navbar-brand" href="https://mdbootstrap.com/docs/jquery/" target="_blank">
-                <strong>MDB</strong>
+            <a class="navbar-brand" href="#" target="_blank">
+                <img src="assets/img/logo.png" alt="Logotipo" />
+                <strong>unifaj - unimax - faagroh</strong>
             </a>
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -41,44 +43,31 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-                <ul class="navbar-nav mr-auto">
+                <ul class="smooth-scroll navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Home
+                        <a class="nav-link" href="#">Início
              
                                 <span class="sr-only">(current)</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="https://mdbootstrap.com/docs/jquery/" target="_blank">About MDB</a>
+                        <a class="nav-link" href="#login">Alterar grade</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="https://mdbootstrap.com/docs/jquery/getting-started/download/" target="_blank">Free
-              download</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://mdbootstrap.com/education/bootstrap/" target="_blank">Free tutorials</a>
+                        <a class="nav-link" href="#" target="_blank">Gerados</a>
                     </li>
                 </ul>
 
                 <ul class="navbar-nav nav-flex-icons">
-                    <li class="nav-item">
-                        <a href="https://www.facebook.com/mdbootstrap" class="nav-link" target="_blank">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="https://twitter.com/MDBootstrap" class="nav-link" target="_blank">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="https://github.com/mdbootstrap/bootstrap-material-design" class="nav-link border border-light rounded"
-                            target="_blank">
-                            <i class="fab fa-github mr-2"></i>MDB GitHub
-                        </a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <p><i class="fa fa-user-circle"></i> <span id="spanNome" runat="server"></span></p>
+                            <div class="dropdown-divider"></div>
+                            <a href="Login.aspx">Sair</a>
+                        </div>
                     </li>
                 </ul>
-
             </div>
 
         </div>
@@ -220,64 +209,62 @@
 
                 </section>
 
+                <hr />
+
+                <section id="login">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto mt-lg-5">
+                                <div class="card wow fadeIn" data-wow-delay="0.3s">
+                                    <div class="card-body">
+                                        <div class="form-header purple-gradient">
+                                            <h3>Acesso do aluno</h3>
+                                        </div>
+
+                                        <div class="md-form">
+                                            <i class="fa fa-user prefix white-text"></i>
+                                            <input type="text" id="txtUsuario" class="form-control" runat="server" />
+                                            <label for="orangeForm-email">RA</label>
+                                        </div>
+
+                                        <div class="md-form">
+                                            <i class="fa fa-lock prefix white-text"></i>
+                                            <input type="password" id="txtSenha" class="form-control" runat="server" />
+                                            <label for="orangeForm-pass">Senha</label>
+                                        </div>
+
+                                        <div class="text-center">
+                                            <asp:Button ID="btnAcessar" runat="server" Text="Acessar" CssClass="btn purple-gradient btn-lg" />
+                                            <hr />
+                                            <div class="inline-ul text-center d-flex justify-content-center">
+                                                <a class="p-2 m-2">Esqueceu a senha?</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </div>
         </main>
     </form>
 
     <footer class="page-footer text-center font-small mt-4 wow fadeIn">
         <div class="pt-4">
-            <a class="btn btn-outline-white" href="https://mdbootstrap.com/docs/jquery/getting-started/download/" target="_blank"
-                role="button">Download MDB
-       
-                    <i class="fas fa-download ml-2"></i>
-            </a>
-            <a class="btn btn-outline-white" href="https://mdbootstrap.com/education/bootstrap/" target="_blank" role="button">Start
-        free tutorial
-       
-                    <i class="fas fa-graduation-cap ml-2"></i>
-            </a>
+            
         </div>
 
         <hr class="my-4" />
 
         <div class="pb-4">
-            <a href="https://www.facebook.com/mdbootstrap" target="_blank">
-                <i class="fab fa-facebook-f mr-3"></i>
-            </a>
-
-            <a href="https://twitter.com/MDBootstrap" target="_blank">
-                <i class="fab fa-twitter mr-3"></i>
-            </a>
-
-            <a href="https://www.youtube.com/watch?v=7MUISDJ5ZZ4" target="_blank">
-                <i class="fab fa-youtube mr-3"></i>
-            </a>
-
-            <a href="https://plus.google.com/u/0/b/107863090883699620484" target="_blank">
-                <i class="fab fa-google-plus-g mr-3"></i>
-            </a>
-
-            <a href="https://dribbble.com/mdbootstrap" target="_blank">
-                <i class="fab fa-dribbble mr-3"></i>
-            </a>
-
-            <a href="https://pinterest.com/mdbootstrap" target="_blank">
-                <i class="fab fa-pinterest mr-3"></i>
-            </a>
-
-            <a href="https://github.com/mdbootstrap/bootstrap-material-design" target="_blank">
-                <i class="fab fa-github mr-3"></i>
-            </a>
-
-            <a href="http://codepen.io/mdbootstrap/" target="_blank">
-                <i class="fab fa-codepen mr-3"></i>
-            </a>
+            
         </div>
 
         <div class="footer-copyright py-3">
-            © 2019 Copyright:
-     
-                <a href="https://mdbootstrap.com/education/bootstrap/" target="_blank">MDBootstrap.com </a>
+            &copy 2019 Copyright: UniFAJ
         </div>
 
     </footer>
@@ -293,6 +280,13 @@
     // Animations initialization
     new WOW().init();
 
+</script>
+
+<script>
+    function acessoAluno() {
+        document.getElementById('divLoginAluno').style.display = 'inline';
+        document.getElementById('conteudo').style.display = 'none';
+    }
 </script>
 
 </html>

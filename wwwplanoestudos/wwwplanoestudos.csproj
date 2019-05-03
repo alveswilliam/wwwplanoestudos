@@ -119,6 +119,7 @@
     <Content Include="assets\img\cabecalho.png" />
     <Content Include="assets\img\cabecalho-color.png" />
     <Content Include="assets\img\favicon-unifaj.png" />
+    <Content Include="assets\img\logo.png" />
     <Content Include="vendor\bootstrap\css\bootstrap.min.css" />
     <Content Include="assets\css\login.css" />
     <Content Include="vendor\bootstrap\js\bootstrap.min.js" />
@@ -157,6 +158,7 @@
     <Content Include="assets\font\roboto\Roboto-Thin.ttf" />
     <Content Include="assets\font\roboto\Roboto-Thin.woff" />
     <Content Include="assets\font\roboto\Roboto-Thin.woff2" />
+    <Content Include="assets\font\museo-slab\MuseoSlab500.otf" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Login.aspx" />
     <Content Include="Scripts\bootstrap.js" />
@@ -234,6 +236,7 @@
     </Compile>
     <Compile Include="_class\DAL.cs" />
     <Compile Include="_class\Periodo.cs" />
+    <Compile Include="_class\Plano.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

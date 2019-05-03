@@ -43,8 +43,8 @@ namespace wwwplanoestudos
                 rblInstituicao.DataValueField = "CODCOLIGADA";
                 rblInstituicao.DataBind();
 
-                //Nome do coordenador no menu
-                //spanNome.InnerText = coordenador.Nome;
+                /* Nome do coordenador no menu */
+                spanNome.InnerText = coordenador.Nome;
             }
             catch (Exception ex)
             {
