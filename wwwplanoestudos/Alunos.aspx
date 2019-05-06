@@ -223,7 +223,7 @@
 
                                         <div class="md-form">
                                             <i class="fa fa-user prefix white-text"></i>
-                                            <input type="text" id="txtUsuario" class="form-control" runat="server" />
+                                            <input type="text" id="txtRA" class="form-control" runat="server" />
                                             <label for="orangeForm-email">RA</label>
                                         </div>
 

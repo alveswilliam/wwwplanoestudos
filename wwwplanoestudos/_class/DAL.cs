@@ -873,7 +873,7 @@ namespace wwwplanoestudos._class
         }
 
         /* Atualiza o CODSTATUS da SMATRICPL. */
-        public bool AtualizaStatusSMatricPl(Aluno aluno)
+        public bool AtualizaStatusSMatricPl(Plano plano)
         {
             conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
 
@@ -892,14 +892,14 @@ namespace wwwplanoestudos._class
                                            AND CODSTATUS IN (@CODSTATUSPLANO, @CODSTATUSPLANO_PAGO)";
 
                 cmd.Parameters.Clear();
-                cmd.Parameters.AddWithValue("CODSTATUSCONFIRMACAO", aluno.CodStatusConfirmacao);
-                cmd.Parameters.AddWithValue("RECMODIFIEDBY", aluno.UsuarioAlteracao);
+                cmd.Parameters.AddWithValue("CODSTATUSCONFIRMACAO", plano.CodStatusConfirmacao);
+                cmd.Parameters.AddWithValue("RECMODIFIEDBY", plano.Usuario);
                 cmd.Parameters.AddWithValue("RECMODIFIEDON", DateTime.Now);
-                cmd.Parameters.AddWithValue("RA", aluno.RA);
-                cmd.Parameters.AddWithValue("CODCOLIGADA", aluno.CodColigada);
-                cmd.Parameters.AddWithValue("IDPERLET", aluno.IdPerlet);
-                cmd.Parameters.AddWithValue("CODSTATUSPLANO", aluno.CodStatusPlano);
-                cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", aluno.CodStatusPlanoPago);
+                cmd.Parameters.AddWithValue("RA", plano.RA);
+                cmd.Parameters.AddWithValue("CODCOLIGADA", plano.CodColigada);
+                cmd.Parameters.AddWithValue("IDPERLET", plano.IdPerlet);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO", plano.CodStatusPlano);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", plano.CodStatusPlanoPago);
 
                 cmd.CommandType = CommandType.Text;
                 conn.Open();
@@ -926,7 +926,7 @@ namespace wwwplanoestudos._class
         }
 
         /* Atualiza o CODSTATUS da SMATRICULA. */
-        public bool AtualizaStatusSMatricula(Aluno aluno)
+        public bool AtualizaStatusSMatricula(Plano plano)
         {
             conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
 
@@ -945,14 +945,14 @@ namespace wwwplanoestudos._class
                                            AND CODSTATUS IN (@CODSTATUSPLANO, @CODSTATUSPLANO_PAGO)";
 
                 cmd.Parameters.Clear();
-                cmd.Parameters.AddWithValue("CODSTATUSCONFIRMACAO", aluno.CodStatusConfirmacao);
-                cmd.Parameters.AddWithValue("RECMODIFIEDBY", aluno.UsuarioAlteracao);
+                cmd.Parameters.AddWithValue("CODSTATUSCONFIRMACAO", plano.CodStatusConfirmacao);
+                cmd.Parameters.AddWithValue("RECMODIFIEDBY", plano.Usuario);
                 cmd.Parameters.AddWithValue("RECMODIFIEDON", DateTime.Now);
-                cmd.Parameters.AddWithValue("RA", aluno.RA);
-                cmd.Parameters.AddWithValue("CODCOLIGADA", aluno.CodColigada);
-                cmd.Parameters.AddWithValue("IDPERLET", aluno.IdPerlet);
-                cmd.Parameters.AddWithValue("CODSTATUSPLANO", aluno.CodStatusPlano);
-                cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", aluno.CodStatusPlanoPago);
+                cmd.Parameters.AddWithValue("RA", plano.RA);
+                cmd.Parameters.AddWithValue("CODCOLIGADA", plano.CodColigada);
+                cmd.Parameters.AddWithValue("IDPERLET", plano.IdPerlet);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO", plano.CodStatusPlano);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", plano.CodStatusPlanoPago);
 
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = conn;
@@ -976,7 +976,7 @@ namespace wwwplanoestudos._class
         }
 
         /* Atualiza o CODSTATUS da SHABILITACAOALUNO. */
-        public bool AtualizaStatusSHabilitacaoAluno(Aluno aluno)
+        public bool AtualizaStatusSHabilitacaoAluno(Plano plano)
         {
             conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
 
@@ -994,14 +994,14 @@ namespace wwwplanoestudos._class
                                            AND CODSTATUS IN (@CODSTATUSPLANO, @CODSTATUSPLANO_PAGO)";
 
                 cmd.Parameters.Clear();
-                cmd.Parameters.AddWithValue("CODSTATUSCONFIRMACAO", aluno.CodStatusConfirmacao);
-                cmd.Parameters.AddWithValue("RECMODIFIEDBY", aluno.UsuarioAlteracao);
+                cmd.Parameters.AddWithValue("CODSTATUSCONFIRMACAO", plano.CodStatusConfirmacao);
+                cmd.Parameters.AddWithValue("RECMODIFIEDBY", plano.Usuario);
                 cmd.Parameters.AddWithValue("RECMODIFIEDON", DateTime.Now);
-                cmd.Parameters.AddWithValue("RA", aluno.RA);
-                cmd.Parameters.AddWithValue("CODCOLIGADA", aluno.CodColigada);
-                cmd.Parameters.AddWithValue("IDPERLET", aluno.IdPerlet);
-                cmd.Parameters.AddWithValue("CODSTATUSPLANO", aluno.CodStatusPlano);
-                cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", aluno.CodStatusPlanoPago);
+                cmd.Parameters.AddWithValue("RA", plano.RA);
+                cmd.Parameters.AddWithValue("CODCOLIGADA", plano.CodColigada);
+                cmd.Parameters.AddWithValue("IDPERLET", plano.IdPerlet);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO", plano.CodStatusPlano);
+                cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", plano.CodStatusPlanoPago);
 
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = conn;
@@ -1027,7 +1027,7 @@ namespace wwwplanoestudos._class
         }
 
         /* Verifica se o aluno tem plano cadastrado no período letivo. */
-        public bool TemPlano(Aluno aluno)
+        public bool TemPlano(Plano plano)
         {
             conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
 
@@ -1045,9 +1045,9 @@ namespace wwwplanoestudos._class
                                            AND CODPERLET = @CODPERLET";
 
                 cmd.Parameters.Clear();
-                cmd.Parameters.Add("CODCOLIGADA", SqlDbType.SmallInt).Value = aluno.CodPerlet;
-                cmd.Parameters.Add("RA", SqlDbType.VarChar, 20).Value = aluno.RA;
-                cmd.Parameters.Add("CODPERLET", SqlDbType.VarChar, 10).Value = aluno.CodPerlet;
+                cmd.Parameters.Add("CODCOLIGADA", SqlDbType.SmallInt).Value = plano.CodColigada;
+                cmd.Parameters.Add("RA", SqlDbType.VarChar, 20).Value = plano.RA;
+                cmd.Parameters.Add("CODPERLET", SqlDbType.VarChar, 10).Value = plano.CodPerlet;
 
                 cmd.CommandType = CommandType.Text;
                 conn.Open();
@@ -1095,7 +1095,7 @@ namespace wwwplanoestudos._class
                                      WHERE
                                            CODCOLIGADA = @CODCOLIGADA
                                            AND RA = @RA
-                                           AND IDPERLET = @IDPERLET";
+                                           AND CODPERLET = @CODPERLET";
 
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("CODSTATUSCONFIRMACAO", plano.CodStatusConfirmacao);
@@ -1103,9 +1103,7 @@ namespace wwwplanoestudos._class
                 cmd.Parameters.AddWithValue("RECMODIFIEDON", DateTime.Now);
                 cmd.Parameters.AddWithValue("RA", plano.RA);
                 cmd.Parameters.AddWithValue("CODCOLIGADA", plano.CodColigada);
-                cmd.Parameters.AddWithValue("IDPERLET", plano.IdPerlet);
-                cmd.Parameters.AddWithValue("CODSTATUSPLANO", plano.CodStatusPlano);
-                cmd.Parameters.AddWithValue("CODSTATUSPLANO_PAGO", plano.CodStatusPlanoPago);
+                cmd.Parameters.AddWithValue("CODPERLET", plano.CodPerlet);
 
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = conn;
@@ -1128,6 +1126,140 @@ namespace wwwplanoestudos._class
             }
 
             return true;
+        }
+
+        /* Insere novo registro na tabela POLIS_PLANOS. */
+        public bool InsereNovoPlano(Plano plano)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+
+            try
+            {
+                cmd.CommandText = @"INSERT INTO POLIS_PLANOS
+                                               (CODCOLIGADA,
+                                                RA,
+                                                CODPERLET,
+                                                STATUS,
+                                                RECCREATEDBY,
+                                                RECCREATEDON)
+
+                                         VALUES
+                                               (@CODCOLIGADA,
+                                                @RA,
+                                                @CODPERLET,
+                                                @STATUS,
+                                                @RECCREATEDBY,
+                                                @RECCREATEDON)";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.AddWithValue("CODCOLIGADA", plano.CodColigada);
+                cmd.Parameters.AddWithValue("RA", plano.RA);
+                cmd.Parameters.AddWithValue("CODPERLET", plano.CodPerlet);
+                cmd.Parameters.AddWithValue("STATUSANALISE", plano.Status);
+                cmd.Parameters.AddWithValue("RECCREATEDBY", plano.Usuario);
+                cmd.Parameters.AddWithValue("RECCREATEDON", DateTime.Now);
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return true;
+        }
+
+        /* Valida se o aluno está matriculado no curso. */
+        public bool AlunoMatriculadoCurso(Aluno aluno)
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConexaoBanco"].ConnectionString;
+
+            try
+            {
+                cmd.CommandText = @"SELECT
+                                           COUNT(SMP.RA) MATRICULADO
+
+                                     FROM
+                                           SALUNO SA (NOLOCK)
+
+                                           INNER JOIN PPESSOA PP (NOLOCK)
+                                           ON SA.CODPESSOA = PP.CODIGO
+                                           
+                                           INNER JOIN SCURSO SC (NOLOCK)
+                                           ON SA.CODCOLIGADA = SC.CODCOLIGADA
+                                           
+                                           INNER JOIN SMATRICPL SMP (NOLOCK)
+                                           ON SA.CODCOLIGADA = SMP.CODCOLIGADA
+                                           AND SA.RA = SMP.RA
+                                           
+                                           INNER JOIN SHABILITACAOFILIAL SHF (NOLOCK)
+                                           ON SA.CODCOLIGADA = SHF.CODCOLIGADA
+                                           AND SC.CODCURSO = SHF.CODCURSO
+                                           AND SMP.IDHABILITACAOFILIAL = SHF.IDHABILITACAOFILIAL
+                                           AND SMP.CODFILIAL = SHF.CODFILIAL
+                                           
+                                           INNER JOIN SPLETIVO SP (NOLOCK)
+                                           ON SA.CODCOLIGADA = SP.CODCOLIGADA
+                                           AND SMP.IDPERLET = SP.IDPERLET
+                                           AND SMP.CODFILIAL = SP.CODFILIAL
+                                           
+                                           INNER JOIN SSTATUS SS (NOLOCK)
+                                           ON SA.CODCOLIGADA = SS.CODCOLIGADA
+                                           AND SMP.CODSTATUS = SS.CODSTATUS
+
+                                    WHERE
+                                          SA.CODCOLIGADA = @CODCOLIGADA
+                                          AND SA.CODTIPOCURSO = @CODTIPOCURSO
+                                          AND SA.RA = @RA
+                                          AND SP.CODPERLET = @CODPERLET
+                                          AND SC.CODCURSO = @CODCURSO
+                                          AND SS.DESCRICAO IN ('xCursando','Plano_pago','Plano', 'xCursado', 'Confirmação', 'xFies-Cursando')";
+
+                cmd.Parameters.Clear();
+                cmd.Parameters.Add("CODCOLIGADA", SqlDbType.SmallInt).Value = aluno.CodColigada;
+                cmd.Parameters.Add("RA", SqlDbType.VarChar, 20).Value = aluno.RA;
+                cmd.Parameters.Add("CODTIPOCURSO", SqlDbType.SmallInt).Value = aluno.CodTipoCurso;
+                cmd.Parameters.Add("CODPERLET", SqlDbType.VarChar, 10).Value = aluno.CodPerlet;
+                cmd.Parameters.Add("CODCURSO", SqlDbType.VarChar, 10).Value = aluno.CodCurso;
+
+                cmd.CommandType = CommandType.Text;
+                conn.Open();
+                cmd.Connection = conn;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    if (reader["MATRICULADO"].ToString() != "0")
+                        return true;
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+
+            return false;
         }
     }
 }

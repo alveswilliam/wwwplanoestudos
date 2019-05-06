@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CPConnect;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -101,7 +102,7 @@ namespace wwwplanoestudos
                 Coordenador coordenador = (Coordenador)Session["coordinfo"];
                 coordenador.CodPerlet = periodo.CodPerlet;
                 coordenador.IdPerlet = dal.IdPerlet(coordenador);
-                
+
                 Session["coordinfo"] = coordenador;
             }
             catch (Exception ex)
@@ -243,7 +244,7 @@ namespace wwwplanoestudos
             {
                 Coordenador coordenador = (Coordenador)Session["coordinfo"];
 
-                Aluno aluno = new Aluno
+                Plano plano = new Plano
                 {
                     CodColigada = Convert.ToInt16(rblInstituicao.SelectedValue),
                     CodTipoCurso = coordenador.CodTipoCurso,
@@ -251,8 +252,11 @@ namespace wwwplanoestudos
                     IdPerlet = coordenador.IdPerlet,
                     CodCurso = rblCurso.SelectedValue,
                     RA = gvAlunos.SelectedDataKey.Value.ToString(),
-                    UsuarioAlteracao = Session["codusuario"].ToString()
+                    Usuario = coordenador.CodUsuario,
+                    Status = "Grade aceita"
                 };
+
+                AceitarGrade(plano);
             }
             catch (Exception)
             {
@@ -266,10 +270,14 @@ namespace wwwplanoestudos
             try
             {
                 DAL dal = new DAL();
-                dal.AtualizaStatusSMatricPl(aluno);
-                dal.AtualizaStatusSMatricula(aluno);
-                dal.AtualizaStatusSHabilitacaoAluno(aluno);
-                dal.AtualizaStatusPlano(plano);
+                dal.AtualizaStatusSMatricPl(plano);
+                dal.AtualizaStatusSMatricula(plano);
+                dal.AtualizaStatusSHabilitacaoAluno(plano);
+
+                if (dal.TemPlano(plano))
+                    dal.AtualizaStatusPlano(plano);
+                else
+                    dal.InsereNovoPlano(plano);
             }
             catch (Exception ex)
             {
@@ -283,7 +291,26 @@ namespace wwwplanoestudos
         {
             try
             {
+                Coordenador coordenador = (Coordenador)Session["coordinfo"];
 
+                Plano plano = new Plano
+                {
+                    CodColigada = Convert.ToInt16(rblInstituicao.SelectedValue),
+                    CodTipoCurso = coordenador.CodTipoCurso,
+                    CodPerlet = coordenador.CodPerlet,
+                    IdPerlet = coordenador.IdPerlet,
+                    CodCurso = rblCurso.SelectedValue,
+                    RA = gvAlunos.SelectedDataKey.Value.ToString(),
+                    Usuario = coordenador.CodUsuario,
+                    Status = "Grade rejeitada"
+                };
+
+                DAL dal = new DAL();
+
+                if (dal.TemPlano(plano))
+                    dal.AtualizaStatusPlano(plano);
+                else
+                    dal.InsereNovoPlano(plano);
             }
             catch (Exception)
             {
@@ -296,12 +323,55 @@ namespace wwwplanoestudos
         {
             try
             {
-                Response.Redirect("Alterar.aspx", false);
-            }
-            catch (Exception)
-            {
+                //LoginClass login = new LoginClass();
+                //object a, b, c;
+                //int erro_i = 0;
+                //string erro_s = null;
 
-                throw;
+                //b = login.ErrorCode;
+                //c = login.ErrorMessage;
+                //a = null;
+
+                ////método utilizado para conexão com RM através de ADO
+                //login.GetConnectionParams(true, "CORPORERM", txtRA.Value.ToString(), txtSenha.Value.ToString(), "F", ref a, ref erro_i, ref erro_s);
+                ////método utilizado para verificação do usuário dentro do RM
+                //login.GetAccessParams(true, "CORPORERM", txtRA.Value.ToString(), txtSenha.Value.ToString(), "F", ref a, ref b, ref c);
+                ////O código '0' indica que a conexão foi efetuada com sucesso.
+
+                //if (b.ToString() == "10" || b.ToString() == "11" || b.ToString() == "12" || b.ToString() == "0")
+                //{
+                    //Usuário existe e senha OK, mas sem permissão de acesso ao corpore.net
+
+                    Coordenador coordenador = (Coordenador)Session["coordinfo"];
+
+                    Aluno aluno = new Aluno
+                    {
+                        CodColigada = Convert.ToInt16(rblInstituicao.SelectedValue),
+                        CodTipoCurso = coordenador.CodTipoCurso,
+                        RA = txtRA.Value,
+                        CodPerlet = coordenador.CodPerlet,
+                        CodCurso = rblCurso.SelectedValue
+                    };
+
+                    DAL dal = new DAL();
+
+                    if (dal.AlunoMatriculadoCurso(aluno))
+                    {
+                        Response.Redirect("Alterar.aspx", false);
+                    }
+                    else
+                        throw new Exception("O aluno não está regularmente matriculado no curso selecionado.");
+                //}
+                //else
+                //{
+                //    //divMsg.Visible = true;
+                //    //spanMsg.InnerText = "Usuário ou senha incorretos.";
+                //}
+            }
+            catch (Exception ex)
+            {
+                //divMsg.Visible = true;
+                //spanMsg.InnerText = "Houve um erro ao realizar o login: " + ex.Message;
             }
         }
     }
